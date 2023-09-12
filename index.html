@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+#humidity{
+    /* width: 100px;
+    width: 50%; */
+    text-align: center;
+    /* position: absolute;
+    left: 100px;
+    top: 300px; */
+}
+
+.units{
+    vertical-align: super;
+    font-size: smaller;
+}
+
+
+p,h1,h3,label,h2,label{
+    text-align: center;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+</head>
+<body>
+  <h1>XPLUSTOOL</h1>
+
+
+<h3>Hệ thống tool MMO</h3>
+<div style="padding-left: 50px;"> 
+  <h4> 1. Tool spam facebook</h4>
+  <a target="_blank" href="https://drive.google.com/drive/folders/1aaa2ce3NdBQuOfqAr2HdhIn78oyJhVbV?usp=sharing">Tải xuống tại đây [2M/1 tháng, vv 5M]</a> 
+</div>
+<!-- <label class="switch" onclick="myFunction()">
+  <input type="checkbox" id="mycheckbox" checked>
+  <span class="slider round"></span>
+</label>
+
+<h1>Enter SSID and PASSWORD to connect to wifi</h1>
+
+<form>
+  <label for="SSID">SSID:</label>
+  <input type="text" id="SSID" name="SSID"><br><br>
+  <label for="PASSWORD">PASSWORD:</label>
+  <input type="text" id="PASSWORD" name="PASSWORD"><br><br>
+  <button type="button" onclick="connect_to_wf()">Connect</button>
+</form>
+
+<div class="slidecontainer">
+  <p>Default range slider:</p1>
+  <input type="range" min="0" max="100" value="50" id="myRange">
+  <p>Value: <span id="demo"></span></p>
+</div> -->
+  
+
+<script>
+  var delayMillisenconds = 100; // delay 200ms
+  var xhttp1 = new XMLHttpRequest();  // button POST
+  var xhttp2 = new XMLHttpRequest(); // connect wifi POST
+  var xhttp3 = new XMLHttpRequest(); // dht11 GET
+  var xhttp4 = new XMLHttpRequest();  // slider POST
+
+  var slider = document.getElementById("myRange");
+  var output = document.getElementById("demo");
+  output.innerHTML = slider.value;
+
+  slider.oninput = function() {
+    output.innerHTML = this.value;
+    setTimeout(function(){
+          xhttp4.open("POST", "/slider", true);
+          xhttp4.send(slider.value);
+        }, delayMillisenconds);
+  }
+
+  function myFunction() {
+      var checkBox = document.getElementById("mycheckbox");
+      if(checkBox.checked == true){
+        setTimeout(function(){
+          // gui lenh bat den
+          xhttp1.open("POST", "/Switch", true);
+          xhttp1.send("onLed");
+        }, delayMillisenconds);
+      }
+      else{
+        setTimeout(function() {
+          // gui lenh tat den
+          xhttp1.open("POST", "/Switch", true);
+          xhttp1.send("offLed");
+        }, delayMillisenconds);
+          
+      }
+  }
+
+  // cứ nhận được phản hồi từ server là sẽ chạy hàm này
+  xhttp3.onreadystatechange = function(){
+    const obj = JSON.parse(this.responseText);
+    document.getElementById("temperature").innerText = obj.temperature;
+    document.getElementById("humidity").innerText = obj.humidity;
+  } 
+
+  // tạo delay 1s sẽ gửi GET 1 lần
+  setInterval (getData, 1000);
+
+  function getData(){
+    xhttp3.open("GET", "/data_dht11", true);
+    xhttp3.send();
+  }
+
+  function connect_to_wf(){
+    var ssid = document.getElementById("SSID").value;
+    var pass = document.getElementById("PASSWORD").value;
+    var wifi = ssid+"/"+pass;
+    xhttp2.open("POST", "/Connect", true);
+    xhttp2.send(wifi);
+  }
+</script>
+</body>
+</html> 
